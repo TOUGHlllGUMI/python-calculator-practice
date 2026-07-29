@@ -1,6 +1,6 @@
 {
-  "name": "計算機",
-  "short_name": "計算機",
+  "name": "veta",
+  "short_name": "veta",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
