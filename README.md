@@ -29,3 +29,7 @@ python main.py
 ```
 
 Enter calculations in the form `<number> <+|-|*|/> <number>` (e.g. `3 + 4`), or type `q` to quit.
+
+## Web Calculator
+
+Open `index.html` in a browser for a button-based calculator UI.

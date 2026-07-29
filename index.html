@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e1e2e;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  .calculator {
+    width: 300px;
+    background: #2a2a3d;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+  #display {
+    width: 100%;
+    height: 64px;
+    background: #14141f;
+    color: #ffffff;
+    font-size: 28px;
+    text-align: right;
+    padding: 0 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  button {
+    height: 56px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #3a3a52;
+    color: #ffffff;
+    transition: filter 0.1s;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { filter: brightness(0.9); }
+  button.operator { background: #ff9f43; color: #ffffff; }
+  button.equals { background: #4caf50; grid-row: span 2; }
+  button.clear { background: #e74c3c; }
+  button.zero { grid-column: span 2; }
+</style>
+</head>
+<body>
+  <div class="calculator">
+    <div id="display">0</div>
+    <div class="buttons">
+      <button class="clear" onclick="clearAll()">C</button>
+      <button onclick="deleteLast()">⌫</button>
+      <button class="operator" onclick="appendOperator('/')">÷</button>
+      <button class="operator" onclick="appendOperator('*')">×</button>
+
+      <button onclick="appendDigit('7')">7</button>
+      <button onclick="appendDigit('8')">8</button>
+      <button onclick="appendDigit('9')">9</button>
+      <button class="operator" onclick="appendOperator('-')">−</button>
+
+      <button onclick="appendDigit('4')">4</button>
+      <button onclick="appendDigit('5')">5</button>
+      <button onclick="appendDigit('6')">6</button>
+      <button class="operator" onclick="appendOperator('+')">+</button>
+
+      <button onclick="appendDigit('1')">1</button>
+      <button onclick="appendDigit('2')">2</button>
+      <button onclick="appendDigit('3')">3</button>
+      <button class="equals" onclick="calculate()">=</button>
+
+      <button class="zero" onclick="appendDigit('0')">0</button>
+      <button onclick="appendDigit('.')">.</button>
+    </div>
+  </div>
+
+<script>
+  let expression = "";
+
+  function updateDisplay() {
+    document.getElementById("display").textContent = expression || "0";
+  }
+
+  function appendDigit(digit) {
+    expression += digit;
+    updateDisplay();
+  }
+
+  function appendOperator(operator) {
+    if (expression === "") {
+      if (operator === "-") {
+        expression = "-";
+        updateDisplay();
+      }
+      return;
+    }
+    const lastChar = expression[expression.length - 1];
+    if ("+-*/".includes(lastChar)) {
+      if (operator === "-" && lastChar !== "-") {
+        expression += operator;
+      } else {
+        expression = expression.slice(0, -1) + operator;
+      }
+    } else {
+      expression += operator;
+    }
+    updateDisplay();
+  }
+
+  function deleteLast() {
+    expression = expression.slice(0, -1);
+    updateDisplay();
+  }
+
+  function clearAll() {
+    expression = "";
+    updateDisplay();
+  }
+
+  function calculate() {
+    if (expression === "") return;
+    try {
+      if (!/^[0-9+\-*/.]+$/.test(expression)) {
+        throw new Error("invalid characters");
+      }
+      const result = Function(`"use strict"; return (${expression})`)();
+      if (!isFinite(result)) throw new Error("division by zero");
+      expression = String(result);
+      updateDisplay();
+    } catch (error) {
+      document.getElementById("display").textContent = "Error";
+      expression = "";
+    }
+  }
+</script>
+</body>
+</html>
