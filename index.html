@@ -236,8 +236,12 @@
   const HISTORY_LIMIT = 20;
   let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 
+  function formatForDisplay(expr) {
+    return expr.replace(/\*/g, "×").replace(/\//g, "÷");
+  }
+
   function updateDisplay() {
-    document.getElementById("display").textContent = expression || "0";
+    document.getElementById("display").textContent = formatForDisplay(expression) || "0";
   }
 
   function renderHistory() {
@@ -253,7 +257,7 @@
 
     history.forEach((entry) => {
       const item = document.createElement("li");
-      item.innerHTML = `<span class="expr">${entry.expr}</span><span class="result">${entry.result}</span>`;
+      item.innerHTML = `<span class="expr">${formatForDisplay(entry.expr)}</span><span class="result">${entry.result}</span>`;
       item.addEventListener("click", () => {
         expression = entry.result;
         updateDisplay();
