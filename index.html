@@ -101,42 +101,178 @@
   }
 
   button.zero { grid-column: span 2; }
+
+  .layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .history-panel {
+    width: 380px;
+    max-height: 494px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
+    padding: 18px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .history-header h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f0eefc;
+  }
+
+  .history-header button {
+    height: auto;
+    padding: 6px 12px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  #history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #history-list li {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+
+  #history-list li:hover { filter: brightness(1.3); }
+
+  #history-list .expr {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: #b9b3d9;
+  }
+
+  #history-list .result {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: right;
+  }
+
+  .history-empty {
+    color: #8b85ad;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 12px;
+  }
 </style>
 </head>
 <body>
-  <div class="calculator">
-    <div id="display">0</div>
-    <div class="buttons">
-      <button class="clear" onclick="clearAll()">C</button>
-      <button onclick="deleteLast()">⌫</button>
-      <button class="operator" onclick="appendOperator('/')">÷</button>
-      <button class="operator" onclick="appendOperator('*')">×</button>
+  <div class="layout">
+    <div class="calculator">
+      <div id="display">0</div>
+      <div class="buttons">
+        <button class="clear" onclick="clearAll()">C</button>
+        <button onclick="deleteLast()">⌫</button>
+        <button class="operator" onclick="appendOperator('/')">÷</button>
+        <button class="operator" onclick="appendOperator('*')">×</button>
 
-      <button onclick="appendDigit('7')">7</button>
-      <button onclick="appendDigit('8')">8</button>
-      <button onclick="appendDigit('9')">9</button>
-      <button class="operator" onclick="appendOperator('-')">−</button>
+        <button onclick="appendDigit('7')">7</button>
+        <button onclick="appendDigit('8')">8</button>
+        <button onclick="appendDigit('9')">9</button>
+        <button class="operator" onclick="appendOperator('-')">−</button>
 
-      <button onclick="appendDigit('4')">4</button>
-      <button onclick="appendDigit('5')">5</button>
-      <button onclick="appendDigit('6')">6</button>
-      <button class="operator" onclick="appendOperator('+')">+</button>
+        <button onclick="appendDigit('4')">4</button>
+        <button onclick="appendDigit('5')">5</button>
+        <button onclick="appendDigit('6')">6</button>
+        <button class="operator" onclick="appendOperator('+')">+</button>
 
-      <button onclick="appendDigit('1')">1</button>
-      <button onclick="appendDigit('2')">2</button>
-      <button onclick="appendDigit('3')">3</button>
-      <button class="equals" onclick="calculate()">=</button>
+        <button onclick="appendDigit('1')">1</button>
+        <button onclick="appendDigit('2')">2</button>
+        <button onclick="appendDigit('3')">3</button>
+        <button class="equals" onclick="calculate()">=</button>
 
-      <button class="zero" onclick="appendDigit('0')">0</button>
-      <button onclick="appendDigit('.')">.</button>
+        <button class="zero" onclick="appendDigit('0')">0</button>
+        <button onclick="appendDigit('.')">.</button>
+      </div>
+    </div>
+
+    <div class="history-panel">
+      <div class="history-header">
+        <h2>履歴</h2>
+        <button onclick="clearHistory()">Clear</button>
+      </div>
+      <ul id="history-list"></ul>
+      <div id="history-empty" class="history-empty">まだ計算履歴がありません</div>
     </div>
   </div>
 
 <script>
   let expression = "";
+  const HISTORY_KEY = "calculator-history";
+  const HISTORY_LIMIT = 20;
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 
   function updateDisplay() {
     document.getElementById("display").textContent = expression || "0";
+  }
+
+  function renderHistory() {
+    const list = document.getElementById("history-list");
+    const empty = document.getElementById("history-empty");
+    list.innerHTML = "";
+
+    if (history.length === 0) {
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    history.forEach((entry) => {
+      const item = document.createElement("li");
+      item.innerHTML = `<span class="expr">${entry.expr}</span><span class="result">${entry.result}</span>`;
+      item.addEventListener("click", () => {
+        expression = entry.result;
+        updateDisplay();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  function addToHistory(expr, result) {
+    history.unshift({ expr, result });
+    history = history.slice(0, HISTORY_LIMIT);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function clearHistory() {
+    history = [];
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
   }
 
   function appendDigit(digit) {
@@ -181,15 +317,19 @@
       if (!/^[0-9+\-*/.]+$/.test(expression)) {
         throw new Error("invalid characters");
       }
+      const originalExpression = expression;
       const result = Function(`"use strict"; return (${expression})`)();
       if (!isFinite(result)) throw new Error("division by zero");
       expression = String(result);
       updateDisplay();
+      addToHistory(originalExpression, expression);
     } catch (error) {
       document.getElementById("display").textContent = "Error";
       expression = "";
     }
   }
+
+  renderHistory();
 </script>
 </body>
 </html>
