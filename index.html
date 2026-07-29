@@ -101,7 +101,6 @@
     background: linear-gradient(135deg, #38ef7d, #11998e);
     color: #ffffff;
     border: none;
-    grid-row: span 2;
   }
 
   button.clear {
@@ -111,6 +110,8 @@
   }
 
   button.zero { grid-column: span 2; }
+
+  button.tall { grid-row: span 2; }
 
   .layout {
     display: flex;
@@ -219,15 +220,15 @@
         <button onclick="appendDigit('4')">4</button>
         <button onclick="appendDigit('5')">5</button>
         <button onclick="appendDigit('6')">6</button>
-        <button class="operator" onclick="appendOperator('+')">+</button>
+        <button class="operator tall" onclick="appendOperator('+')">+</button>
 
         <button onclick="appendDigit('1')">1</button>
         <button onclick="appendDigit('2')">2</button>
         <button onclick="appendDigit('3')">3</button>
-        <button class="equals" onclick="calculate()">=</button>
 
         <button class="zero" onclick="appendDigit('0')">0</button>
         <button onclick="appendDigit('.')">.</button>
+        <button class="equals" onclick="calculate()">=</button>
       </div>
     </div>
 
