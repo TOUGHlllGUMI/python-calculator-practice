@@ -237,7 +237,7 @@
   let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
 
   function formatForDisplay(expr) {
-    return expr.replace(/\*/g, "×");
+    return expr.replace(/\*/g, "×").replace(/\//g, "÷");
   }
 
   function updateDisplay() {
