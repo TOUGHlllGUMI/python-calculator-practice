@@ -109,6 +109,12 @@
     border: none;
   }
 
+  button.backspace {
+    background: linear-gradient(135deg, #4b6cb7, #182848);
+    color: #ffffff;
+    border: none;
+  }
+
   button.zero { grid-column: span 2; }
 
   button.tall { grid-row: span 2; height: 100%; }
@@ -208,7 +214,7 @@
       <div id="display">0</div>
       <div class="buttons">
         <button class="clear" onclick="clearAll()">C</button>
-        <button onclick="deleteLast()">⌫</button>
+        <button class="backspace" onclick="deleteLast()">⌫</button>
         <button class="operator" onclick="appendOperator('/')">÷</button>
         <button class="operator" onclick="appendOperator('*')">×</button>
 
