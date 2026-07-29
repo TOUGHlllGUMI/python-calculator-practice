@@ -33,3 +33,8 @@ Enter calculations in the form `<number> <+|-|*|/> <number>` (e.g. `3 + 4`), or 
 ## Web Calculator
 
 Open `index.html` in a browser for a button-based calculator UI.
+
+The web calculator is also installable as a PWA (Progressive Web App): visit the
+[live site](https://toughlllgumi.github.io/python-calculator-practice/) and use your
+browser's "Install app" / "Add to Home Screen" option to use it like a native app,
+including offline.
