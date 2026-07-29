@@ -102,10 +102,20 @@
   }
 
   function appendOperator(operator) {
-    if (expression === "") return;
+    if (expression === "") {
+      if (operator === "-") {
+        expression = "-";
+        updateDisplay();
+      }
+      return;
+    }
     const lastChar = expression[expression.length - 1];
     if ("+-*/".includes(lastChar)) {
-      expression = expression.slice(0, -1) + operator;
+      if (operator === "-" && lastChar !== "-") {
+        expression += operator;
+      } else {
+        expression = expression.slice(0, -1) + operator;
+      }
     } else {
       expression += operator;
     }
